@@ -1,0 +1,15 @@
+<launch>
+    <rosparam file="$(find hikrobot_camera)/config/right_camera.yaml" command="load" />
+    <node pkg="hikrobot_camera" type="hikrobot_camera" name="hikrobot_camera_right" respawn="true" output="screen" />
+    
+    <rosparam file="$(find hikrobot_camera)/config/left_camera.yaml" command="load" />
+    <node pkg="hikrobot_camera" type="hikrobot_camera" name="hikrobot_camera_left" respawn="true" output="screen" />
+    <!-- 
+    pkg指出ROS应该运行哪个pkg
+    type是可执行文件的名称
+    name则是可以任意给出的，它覆盖了原文件中ros::init指定的node的名字 
+    -->
+    <node pkg="rviz" type="rviz" name="rviz1" args="-d $(find hikrobot_camera)/rviz_config/hikrobot.rviz" />
+    <node pkg="rviz" type="rviz" name="rviz2" args="-d $(find hikrobot_camera)/rviz_config/hikrobot2.rviz" />
+
+</launch>
