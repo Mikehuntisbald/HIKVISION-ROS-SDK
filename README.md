@@ -1,3 +1,5 @@
+This is a modified ros sdk of hikvision industrial camera, supporting multi-cam. If one cam is used, plz modify right_camera.yaml
+
 # HIKROBOT-MVS-CAMERA-ROS
 The ros driver package of Hikvision Industrial Camera SDK. Support configuration parameters, the parameters have been optimized, and the photos have been transcoded to rgb format.
 Please install mvs, https://blog.csdn.net/weixin_41965898/article/details/116801491
@@ -18,5 +20,7 @@ roslaunch hikrobot_camera hikrobot_camera.launch
 use rviz subscribe topic： /hikrobot_camera/rgb
 ```
 source ./devel/setup.bash 
-roslaunch hikrobot_camera hikrobot_camera_rviz.launch
+roslaunch hikrobot_camera multi.launch
+
+(roslaunch hikrobot_camera hikrobot_camera_rviz.launch)
 ```
