@@ -8,7 +8,7 @@ Please install mvs, https://blog.csdn.net/weixin_41965898/article/details/116801
 # Install
 ```
 mkdir -p ~/ws_hikrobot_camera/src
-git clone https://github.com/luckyluckydadada/HIKROBOT-MVS-CAMERA-ROS.git ~/ws_hikrobot_camera/src/hikrobot_camera
+git clone https://github.com/Mikehuntisbald/HIKVISION-ROS-SDK/tree/main
 cd ~/ws_hikrobot_camera
 catkin_make
 ```
