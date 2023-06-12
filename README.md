@@ -15,13 +15,5 @@ catkin_make
 # launch run
 ```
 source ./devel/setup.bash 
-roslaunch hikrobot_camera hikrobot_camera.launch
-```
-# launch run
-use rviz subscribe topic： /hikrobot_camera/rgb
-```
-source ./devel/setup.bash 
-roslaunch hikrobot_camera multi.launch
-
-(roslaunch hikrobot_camera hikrobot_camera_rviz.launch)
+roslaunch hikrobot_camera right.launch
 ```
