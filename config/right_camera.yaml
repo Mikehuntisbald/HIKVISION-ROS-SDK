@@ -3,12 +3,12 @@ SerialNumber: "K69668543"
 TopicName: "/right_camera/image"
 
 
-width: 1224             #图像宽度
-height: 1024            #图像高度
+width: 1024             #图像宽度
+height: 800            #图像高度
 #width: 3072             #图像宽度
 #height: 2048            #图像高度
-Offset_x: 0             #X方向偏置
-Offset_y: 0             #Y方向偏置
+Offset_x: 30             #X方向偏置
+Offset_y: 24             #Y方向偏置
 
 FrameRateEnable: true   #使能 
 FrameRate: 15           #帧率
