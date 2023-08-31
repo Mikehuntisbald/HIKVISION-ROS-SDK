@@ -14,6 +14,6 @@ catkin_make
 ```
 # launch run
 ```
-source ./devel/setup.bash 
+source ～/ws_hikrobot_camera/devel/setup.bash 
 roslaunch hikrobot_camera right.launch
 ```
