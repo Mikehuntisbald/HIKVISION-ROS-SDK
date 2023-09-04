@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 #set(OpenCV_DIR /home/haoyi/opencv-installed/usr/local/share/OpenCV)
 project(hikrobot_camera)
 
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
