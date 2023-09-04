@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-set(OpenCV_DIR /home/haoyi/opencv-installed/usr/local/share/OpenCV)
+#set(OpenCV_DIR /home/haoyi/opencv-installed/usr/local/share/OpenCV)
 project(hikrobot_camera)
 
 add_compile_options(-std=c++11)
@@ -17,7 +17,7 @@ catkin_package(
  
 )
 
-find_package(OpenCV 3.3.1 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 include_directories(
   ${catkin_INCLUDE_DIRS}
