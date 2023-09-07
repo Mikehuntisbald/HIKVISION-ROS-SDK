@@ -1,14 +1,18 @@
 # true 1 和 false 0 
 SerialNumber: "K69668543"
 TopicName: "/right_camera/image"
+camera_matrix: [899.854913, 0.000000, 560.339365,
+                0.000000, 898.798270, 495.317710,
+                0.000000, 0.000000, 1.000000]
+dist_coeffs: [-0.075906, 0.084462, -0.000647, -0.001500, 0.000000]
+distortion_model: "plumb_bob"
 
-
-width: 1152             #图像宽度
-height: 956            #图像高度
+width: 1224             #图像宽度
+height: 1024            #图像高度
 #width: 3072             #图像宽度
 #height: 2048            #图像高度
-Offset_x: 36             #X方向偏置
-Offset_y: 28             #Y方向偏置
+Offset_x: 0             #X方向偏置
+Offset_y: 0             #Y方向偏置
 
 FrameRateEnable: true   #使能 
 FrameRate: 15           #帧率

@@ -1,6 +1,11 @@
 # true 1 和 false 0 
 SerialNumber: "K69668582"
 TopicName: "/left_camera/image"
+camera_matrix: [1748.395580, 0.000000, 597.809765,
+                0.000000, 1747.891898, 509.343147,
+                0.000000, 0.000000, 1.000000]
+dist_coeffs: [-0.071175, 0.062294, -0.000401, -0.002200, 0.000000]
+distortion_model: "plumb_bob"
 
 width: 1224             #图像宽度
 height: 1024            #图像高度
