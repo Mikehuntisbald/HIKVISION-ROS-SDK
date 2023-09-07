@@ -72,7 +72,7 @@ int main(int argc, char **argv)
         {
             continue;
         }
-#if FIT_LIDAR_CUT_IMAGE
+#if FIT_LIDAR_CUT_IMAG
         cv::Rect area(FIT_min_x,FIT_min_y,FIT_max_x-FIT_min_x,FIT_max_y-FIT_min_y); // cut区域：从左上角像素坐标x，y，宽，高
         cv::Mat src_new = src(area);
         cv_ptr->image = src_new;
@@ -81,7 +81,10 @@ int main(int argc, char **argv)
 #endif
         image_msg = *(cv_ptr->toImageMsg());
         constexpr uint64_t k1e3 = 1000;
-        image_msg.header.stamp = ros::Time().fromSec(camera::stImageInfo.nHostTimeStamp / k1e3);  // ros发出的时间不是快门时间
+        //ROS_WARN("%d, %d", camera::stImageInfo.nCycleCount, camera::stImageInfo.nCycleOffset );
+        double nsec = (camera::stImageInfo.nHostTimeStamp % k1e3) / 1000.00;
+        ROS_WARN("%f", nsec );
+        image_msg.header.stamp = ros::Time().fromSec(camera::stImageInfo.nHostTimeStamp / k1e3 + nsec);  // ros发出的时间不是快门时间
         image_msg.header.frame_id = "hikrobot_camera";
 
         image_pub.publish(image_msg, camera_info_msg);
