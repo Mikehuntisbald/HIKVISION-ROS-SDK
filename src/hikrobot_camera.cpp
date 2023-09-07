@@ -31,6 +31,16 @@ int main(int argc, char **argv)
     //********** rosnode init **********/
     image_transport::ImageTransport main_cam_image(hikrobot_camera);
     std::string TopicName;
+    std::string calib_config_file;
+    std::string distortion_model;
+
+    vector<double> camera_matrix;
+    vector<double> dist_coeffs;
+
+    hikrobot_camera.param<string>("distortion_model", distortion_model, "plumb_bob");
+    hikrobot_camera.param<vector<double>>("camera_matrix", camera_matrix,
+                           vector<double>());
+    hikrobot_camera.param<vector<double>>("dist_coeffs", dist_coeffs, vector<double>());
     hikrobot_camera.getParam("TopicName", TopicName);
     image_transport::CameraPublisher image_pub = main_cam_image.advertiseCamera(TopicName, 1000);
 
@@ -61,13 +71,21 @@ int main(int argc, char **argv)
         cv_ptr->image = src;
 #endif
         image_msg = *(cv_ptr->toImageMsg());
-        image_msg.header.stamp = ros::Time::now();  // ros发出的时间不是快门时间
+        constexpr uint64_t k1e9 = 1000000000;
+        image_msg.header.stamp = ros::Time().fromSec(camera::stImageInfo.nHostTimeStamp / k1e9);  // ros发出的时间不是快门时间
         image_msg.header.frame_id = "hikrobot_camera";
 
-        camera_info_msg.header.frame_id = image_msg.header.frame_id;
-	    camera_info_msg.header.stamp = image_msg.header.stamp;
-        image_pub.publish(image_msg, camera_info_msg);
+        camera_info_msg.width = camera::stImageInfo.nWidth;
+        camera_info_msg.height = camera::stImageInfo.nHeight;
+        camera_info_msg.distortion_model = distortion_model;
+        for (int i = 0; i < 9; i++) {
+          camera_info_msg.K[i] = camera_matrix[i];
+        }
+        for (int i = 0; i < 5; i++) {
+          camera_info_msg.D.push_back(dist_coeffs[i]);
+        }
 
+        image_pub.publish(image_msg, camera_info_msg);
         //*******************************************************************************************************************/
     }
     return 0;

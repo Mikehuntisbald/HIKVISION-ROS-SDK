@@ -12,6 +12,7 @@ namespace camera
 {
 //********** define ************************************/
 #define MAX_IMAGE_DATA_SIZE (4 * 2048 * 3072)
+    MV_FRAME_OUT_INFO_EX stImageInfo = {0};
     //********** frame ************************************/
     cv::Mat frame;
     //********** frame_empty ******************************/
@@ -122,6 +123,7 @@ namespace camera
         }
 
         unsigned int nIndex = 0;
+        int index;
         std::string expect_serial_number;
         node.getParam("SerialNumber", expect_serial_number);
         if (stDeviceList.nDeviceNum > 0)
@@ -133,6 +135,7 @@ namespace camera
                             ->SpecialInfo.stGigEInfo.chSerialNumber);
                 MV_CC_DEVICE_INFO *pDeviceInfo = stDeviceList.pDeviceInfo[i];
         	if (expect_serial_number == serial_number) {
+        		index = i;
         		std::cout<<serial_number<<std::endl;
         		printf("[device %d]:\n", i);
           		break;
@@ -153,7 +156,7 @@ namespace camera
         
         //********** 选择设备并创建句柄 *************************/
 
-        nRet = MV_CC_CreateHandle(&handle, stDeviceList.pDeviceInfo[0]);
+        nRet = MV_CC_CreateHandle(&handle, stDeviceList.pDeviceInfo[index]);
 
         if (MV_OK != nRet)
         {
@@ -194,7 +197,7 @@ namespace camera
 
         //********** frame **********/
         //白平衡 非自适应（给定参数0）
-        nRet = MV_CC_SetEnumValue(handle, "BalanceWhiteAuto", 0);
+        nRet = MV_CC_SetEnumValue(handle, "BalanceWhiteAuto", 1);
         // //白平衡度
         // int rgb[3] = {1742, 1024, 2371};
         // for (int i = 0; i < 3; i++)
@@ -674,7 +677,6 @@ namespace camera
         int nRet;
         unsigned char *m_pBufForDriver = (unsigned char *)malloc(sizeof(unsigned char) * MAX_IMAGE_DATA_SIZE);
         unsigned char *m_pBufForSaveImage = (unsigned char *)malloc(MAX_IMAGE_DATA_SIZE);
-        MV_FRAME_OUT_INFO_EX stImageInfo = {0};
         MV_CC_PIXEL_CONVERT_PARAM stConvertParam = {0};
         cv::Mat tmp;
         int image_empty_count = 0; //空图帧数
@@ -694,8 +696,8 @@ namespace camera
             image_empty_count = 0; //空图帧数
             //转换图像格式为BGR8
 
-            stConvertParam.nWidth = 3072;                               //ch:图像宽 | en:image width
-            stConvertParam.nHeight = 2048;                              //ch:图像高 | en:image height
+            stConvertParam.nWidth = stImageInfo.nWidth;                               //ch:图像宽 | en:image width
+            stConvertParam.nHeight = stImageInfo.nHeight;                              //ch:图像高 | en:image height
             stConvertParam.pSrcData = m_pBufForDriver;                  //ch:输入数据缓存 | en:input data buffer
             stConvertParam.nSrcDataLen = MAX_IMAGE_DATA_SIZE;           //ch:输入数据大小 | en:input data size
             stConvertParam.enDstPixelType = PixelType_Gvsp_BGR8_Packed; //ch:输出像素格式 | en:output pixel format                      //! 输出格式 RGB
@@ -707,7 +709,7 @@ namespace camera
             camera::frame = cv::Mat(stImageInfo.nHeight, stImageInfo.nWidth, CV_8UC3, m_pBufForSaveImage).clone(); //tmp.clone();
             frame_empty = 0;
             pthread_mutex_unlock(&mutex);
-            double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
+            //double time = ((double)cv::getTickCount() - start) / cv::getTickFrequency();
             //*************************************testing img********************************//
             //std::cout << "HK_camera,Time:" << time << "\tFPS:" << 1 / time << std::endl;
             //imshow("HK vision",frame);
