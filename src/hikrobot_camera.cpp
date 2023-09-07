@@ -46,6 +46,15 @@ int main(int argc, char **argv)
 
     sensor_msgs::Image image_msg;
     sensor_msgs::CameraInfo camera_info_msg;
+    camera_info_msg.width = camera::stImageInfo.nWidth;
+        camera_info_msg.height = camera::stImageInfo.nHeight;
+        camera_info_msg.distortion_model = distortion_model;
+        for (int i = 0; i < 9; i++) {
+          camera_info_msg.K[i] = camera_matrix[i];
+        }
+        for (int i = 0; i < 5; i++) {
+          camera_info_msg.D.push_back(dist_coeffs[i]);
+        }
     cv_bridge::CvImagePtr cv_ptr = boost::make_shared<cv_bridge::CvImage>();
     cv_ptr->encoding = sensor_msgs::image_encodings::BGR8;  // 就是rgb格式 
     
@@ -71,19 +80,9 @@ int main(int argc, char **argv)
         cv_ptr->image = src;
 #endif
         image_msg = *(cv_ptr->toImageMsg());
-        constexpr uint64_t k1e9 = 1000000000;
-        image_msg.header.stamp = ros::Time().fromSec(camera::stImageInfo.nHostTimeStamp / k1e9);  // ros发出的时间不是快门时间
+        constexpr uint64_t k1e3 = 1000;
+        image_msg.header.stamp = ros::Time().fromSec(camera::stImageInfo.nHostTimeStamp / k1e3);  // ros发出的时间不是快门时间
         image_msg.header.frame_id = "hikrobot_camera";
-
-        camera_info_msg.width = camera::stImageInfo.nWidth;
-        camera_info_msg.height = camera::stImageInfo.nHeight;
-        camera_info_msg.distortion_model = distortion_model;
-        for (int i = 0; i < 9; i++) {
-          camera_info_msg.K[i] = camera_matrix[i];
-        }
-        for (int i = 0; i < 5; i++) {
-          camera_info_msg.D[i] = dist_coeffs[i];
-        }
 
         image_pub.publish(image_msg, camera_info_msg);
         //*******************************************************************************************************************/
