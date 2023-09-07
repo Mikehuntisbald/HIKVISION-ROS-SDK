@@ -82,7 +82,7 @@ int main(int argc, char **argv)
           camera_info_msg.K[i] = camera_matrix[i];
         }
         for (int i = 0; i < 5; i++) {
-          camera_info_msg.D.push_back(dist_coeffs[i]);
+          camera_info_msg.D[i] = dist_coeffs[i];
         }
 
         image_pub.publish(image_msg, camera_info_msg);
