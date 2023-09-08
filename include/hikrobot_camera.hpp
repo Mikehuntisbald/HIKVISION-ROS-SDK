@@ -15,6 +15,7 @@ namespace camera
     MV_FRAME_OUT_INFO_EX stImageInfo = {0};
     //********** frame ************************************/
     cv::Mat frame;
+    ros::Time time;
     //********** frame_empty ******************************/
     bool frame_empty = 0;
     //********** mutex ************************************/
@@ -61,7 +62,7 @@ namespace camera
         //********** 恢复默认参数 *************************/
         bool reset();
         //********** 读图10个相机的原始图像 ********************************/
-        void ReadImg(cv::Mat &image);
+        void ReadImg(cv::Mat &image, ros::Time &time);
 
     private:
         //********** handle ******************************/
@@ -174,7 +175,30 @@ namespace camera
             printf("MV_CC_OpenDevice fail! nRet [%x]\n", nRet);
             exit(-1);
         }
-
+        
+	// ch:开启Chunk Mode | en:Open Chunk Mode
+        nRet = MV_CC_SetBoolValue(handle, "ChunkModeActive", true);
+        if (MV_OK != nRet)
+        {
+            printf("Set Chunk Mode fail! nRet [0x%x]\n", nRet);
+            exit(-1);
+        }
+        
+        // ch:Chunk Selector设为Timestamp | en: Chunk Selector set as Timestamp
+        nRet = MV_CC_SetEnumValueByString(handle, "ChunkSelector", "Timestamp");
+        if (MV_OK != nRet)
+        {
+            printf("Set Timestamp Chunk fail! nRet [0x%x]\n", nRet);
+            exit(-1);
+        }
+        // ch:开启Chunk Enable | en:Open Chunk Enable
+        nRet = MV_CC_SetBoolValue(handle, "ChunkEnable", true);
+        if (MV_OK != nRet)
+        {
+            printf("Set Chunk Enable fail! nRet [0x%x]\n", nRet);
+            exit(-1);
+        }else printf("Set Chunk Enable OK! nRet [0x%x]\n", nRet);
+        
         //设置 yaml 文件里面的配置
         this->set(CAP_PROP_FRAMERATE_ENABLE, FrameRateEnable);
         if (FrameRateEnable)
@@ -654,7 +678,7 @@ namespace camera
     }
 
     //^ ********************************** Camera constructor************************************ //
-    void Camera::ReadImg(cv::Mat &image)
+    void Camera::ReadImg(cv::Mat &image, ros::Time &time)
     {
 
         pthread_mutex_lock(&mutex);
@@ -665,6 +689,9 @@ namespace camera
         else
         {
             image = camera::frame.clone();
+            double nsec = (stImageInfo.nHostTimeStamp % 1000) / 1000.00;
+            time = ros::Time().fromSec(stImageInfo.nHostTimeStamp / 1000 + nsec);
+            ROS_WARN("%f",stImageInfo.nHostTimeStamp / 1000 + nsec);
             frame_empty = 1;
         }
         pthread_mutex_unlock(&mutex);
