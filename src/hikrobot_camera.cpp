@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 {
     //********** variables    **********/
     cv::Mat src;
+    ros::Time time;
     //string src = "",image_pub = "";
     //********** rosnode init **********/
     ros::init(argc, argv, "hikrobot_camera");
@@ -66,8 +67,8 @@ int main(int argc, char **argv)
 
         loop_rate.sleep();
         ros::spinOnce();
-
-        MVS_cap.ReadImg(src);
+	
+        MVS_cap.ReadImg(src, time);
         if (src.empty())
         {
             continue;
@@ -82,9 +83,9 @@ int main(int argc, char **argv)
         image_msg = *(cv_ptr->toImageMsg());
         constexpr uint64_t k1e3 = 1000;
         //ROS_WARN("%d, %d", camera::stImageInfo.nCycleCount, camera::stImageInfo.nCycleOffset );
-        double nsec = (camera::stImageInfo.nHostTimeStamp % k1e3) / 1000.00;
-        ROS_WARN("%f", nsec );
-        image_msg.header.stamp = ros::Time().fromSec(camera::stImageInfo.nHostTimeStamp / k1e3 + nsec);  // ros发出的时间不是快门时间
+        //double nsec = (camera::stImageInfo.nHostTimeStamp % k1e3) / 1000.00;
+        //ROS_WARN("%f", nsec );
+        image_msg.header.stamp = time;  // ros发出的时间不是快门时间
         image_msg.header.frame_id = "hikrobot_camera";
 
         image_pub.publish(image_msg, camera_info_msg);

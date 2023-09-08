@@ -7,17 +7,16 @@ camera_matrix: [899.854913, 0.000000, 560.339365,
 dist_coeffs: [-0.075906, 0.084462, -0.000647, -0.001500, 0.000000]
 distortion_model: "plumb_bob"
 
-width: 1224             #图像宽度
-height: 1024            #图像高度
+width: 1152             #图像宽度
+height: 956            #图像高度
 #width: 3072             #图像宽度
 #height: 2048            #图像高度
-Offset_x: 0             #X方向偏置
-Offset_y: 0             #Y方向偏置
-
+Offset_x: 36             #X方向偏置
+Offset_y: 28             #Y方向偏置
 FrameRateEnable: true   #使能 
-FrameRate: 15           #帧率
+FrameRate: 10           #帧率
 
-ExposureTime: 5000     #曝光时间
+ExposureTime: 1000     #曝光时间
 
 GammaEnable: true
 Gamma: 0.7              #伽马因子
